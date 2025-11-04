@@ -1,0 +1,8 @@
+{
+    "StartingChar": "Mambo",
+    "FrameRate": 60,
+    "FollowRadius": 150.0,
+    "SpriteColumn": 5,
+    "FrameHeight": 300,
+    "FrameWidth": 300
+}
