@@ -1,0 +1,19 @@
+{
+    "Idle": "idle.png",
+    "Hover": "hover.png",
+    "Click": "click.png",
+    "Sleep": "sleep.png",
+    "Intro": "intro.png",
+    "Outro": "outro.png",
+    "Grab": "grab.png",
+    "Up": "forward.png",
+    "Down": "backward.png",
+    "Left": "left.png",
+    "Right": "right.png",
+    "UpLeft": "forward.png",
+    "UpRight": "forward.png",
+    "DownLeft": "backward.png",
+    "DownRight": "backward.png",
+    "WalkIdle": "walk-idle.png",
+    "Pat": "walk-idle.png"
+}

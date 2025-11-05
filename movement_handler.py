@@ -3,6 +3,12 @@ from PySide6.QtCore import Qt
 import settings
 
 
+def reset_all_walk_frames():
+    c = settings.CurrentFrames
+    c.Up = c.Down = c.Left = c.Right = 0
+    c.UpLeft = c.UpRight = c.DownLeft = c.DownRight = 0
+
+
 class MovementHandler:
     def __init__(self):
         self.w = False
@@ -32,14 +38,15 @@ class MovementHandler:
 
     def get_animation_direction(self) -> str | None:
         """
-        Unlike `getVelocity` where the movement can be diagonal, there's no diagonal
-        animation. So we prioritize vertical movement over horizontal movement.
+        Returns a string representing the current movement direction for animation purposes.
         """
+        vertical = ""
+        horizontal = ""
         if self.w ^ self.s:
-            return "up" if self.w else "down"
-        elif self.a ^ self.d:
-            return "left" if self.a else "right"
-        return None
+            vertical = "Down" if self.w else "Up"   # inverted from velocity
+        if self.a ^ self.d:
+            horizontal = "Left" if self.a else "Right"
+        return vertical + horizontal
 
     # --- @! event recorders -------------------------------------------------------------
 

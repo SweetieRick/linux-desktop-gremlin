@@ -11,7 +11,8 @@ from PySide6.QtMultimedia import QSoundEffect
 
 import settings
 import sprite_manager
-from movement_handler import MovementHandler
+from hotspot_geometry import compute_top_hotspot_geometry
+from movement_handler import MovementHandler, reset_all_walk_frames
 from settings import State
 
 
@@ -40,17 +41,9 @@ class GremlinWindow(QWidget):
         self.sprite_label.setScaledContents(True)
 
         # --- @! Hotspots ----------------------------------------------------------------
-        # self.left_hotspot = QWidget(self)
-        # self.left_hotspot.setGeometry(110, 95, 60, 85)
-        # self.left_hotspot.mousePressEvent = self.left_hotspot_click
-
-        # self.right_hotspot = QWidget(self)
-        # self.right_hotspot.setGeometry(280, 95, 60, 85)
-        # self.right_hotspot.mousePressEvent = self.right_hotspot_click
-
-        # self.top_hotspot = QWidget(self)
-        # self.top_hotspot.setGeometry(160, 0, 135, 50)
-        # self.top_hotspot.mousePressEvent = self.top_hotspot_click
+        self.left_hotspot = QWidget(self)
+        self.left_hotspot.setGeometry(*compute_top_hotspot_geometry())
+        self.left_hotspot.mousePressEvent = self.top_hotspot_click
 
         # --- @! Sound Player ------------------------------------------------------------
         self.sound_player = QSoundEffect(self)
@@ -105,7 +98,7 @@ class GremlinWindow(QWidget):
         elif new_state == State.CLICK:
             self.play_sound("mambo.wav")
         elif new_state == State.PAT:
-            self.play_sound("grab.wav")
+            self.play_sound("pat.wav")
 
         self.current_state = new_state
         self.reset_current_frames(new_state)
@@ -123,7 +116,7 @@ class GremlinWindow(QWidget):
             case State.HOVER:
                 c.Hover = 0
             case State.WALKING:
-                c.WalkUp = c.WalkDown = c.WalkLeft = c.WalkRight = 0
+                reset_all_walk_frames()
             case State.DRAGGING:
                 c.Grab = 0
             case State.CLICK:
@@ -169,36 +162,37 @@ class GremlinWindow(QWidget):
         """ Plays the animation for the current state. """
         c = settings.CurrentFrames
         f = settings.FrameCounts
+        m = settings.SpriteMap
 
         match self.current_state:
             case State.INTRO:
                 c.Intro = self.play_animation(
-                    sprite_manager.get("intro"), c.Intro, f.Intro)
+                    sprite_manager.get(m.Intro), c.Intro, f.Intro)
                 if c.Intro == 0:
                     self.set_state(State.IDLE)
 
             case State.IDLE:
                 c.Idle = self.play_animation(
-                    sprite_manager.get("idle"), c.Idle, f.Idle)
+                    sprite_manager.get(m.Idle), c.Idle, f.Idle)
 
             case State.HOVER:
                 c.Hover = self.play_animation(
-                    sprite_manager.get("hover"), c.Hover, f.Hover)
+                    sprite_manager.get(m.Hover), c.Hover, f.Hover)
 
             case State.WALKING:
                 self.handle_walking_animation_and_movement()
 
             case State.WALK_IDLE:
                 c.WalkIdle = self.play_animation(
-                    sprite_manager.get("widle"), c.WalkIdle, f.WalkIdle)
+                    sprite_manager.get(m.WalkIdle), c.WalkIdle, f.WalkIdle)
 
             case State.DRAGGING:
                 c.Grab = self.play_animation(
-                    sprite_manager.get("grab"), c.Grab, f.Grab)
+                    sprite_manager.get(m.Grab), c.Grab, f.Grab)
 
             case State.PAT:
                 c.Pat = self.play_animation(
-                    sprite_manager.get("pat"), c.Pat, f.Pat)
+                    sprite_manager.get(m.Pat), c.Pat, f.Pat)
                 if c.Pat == 0:
                     # transition to Hover or Idle when "pat" animation finishes
                     self.set_state(
@@ -206,7 +200,7 @@ class GremlinWindow(QWidget):
 
             case State.CLICK:
                 c.Click = self.play_animation(
-                    sprite_manager.get("click"), c.Click, f.Click)
+                    sprite_manager.get(m.Click), c.Click, f.Click)
                 if c.Click == 0:
                     # transition to Hover or Idle when "click" animation finishes
                     self.set_state(
@@ -214,7 +208,7 @@ class GremlinWindow(QWidget):
 
             case State.SLEEPING:
                 c.Sleep = self.play_animation(
-                    sprite_manager.get("sleep"), c.Sleep, f.Sleep)
+                    sprite_manager.get(m.Sleep), c.Sleep, f.Sleep)
 
             case State.OUTRO:
                 # this state is handled by outro_tick, but we stop master_timer
@@ -223,23 +217,17 @@ class GremlinWindow(QWidget):
 
     def handle_walking_animation_and_movement(self):
         """ Helper function to keep animation_tick clean. """
-        c = settings.CurrentFrames
         f = settings.FrameCounts
+        c = settings.CurrentFrames
 
         direction = self.movement_handler.get_animation_direction()
+        direction_sprite = getattr(settings.SpriteMap, direction, None)
 
-        if direction == "left":
-            c.WalkLeft = self.play_animation(
-                sprite_manager.get("left"), c.WalkLeft, f.Left)
-        elif direction == "right":
-            c.WalkRight = self.play_animation(
-                sprite_manager.get("right"), c.WalkRight, f.Right)
-        elif direction == "up":
-            c.WalkUp = self.play_animation(
-                sprite_manager.get("backward"), c.WalkUp, f.Up)
-        elif direction == "down":
-            c.WalkDown = self.play_animation(
-                sprite_manager.get("forward"), c.WalkDown, f.Down)
+        frame_count = getattr(f, direction, 0)
+        prev_frame = getattr(c, direction, 0)
+        next_frame = self.play_animation(
+            sprite_manager.get(direction_sprite), prev_frame, frame_count)
+        setattr(c, direction, next_frame)
 
         # apply the new position to the window
         dx, dy = self.movement_handler.getVelocity()
@@ -249,7 +237,7 @@ class GremlinWindow(QWidget):
     def play_sound(self, file_name, delay_seconds=0):
         """ Plays a sound, respecting the LastPlayed delay. """
         path = os.path.join(
-            settings.BASE_DIR, "Sounds", settings.Settings.StartingChar, file_name)
+            settings.BASE_DIR, "sounds", settings.Settings.StartingChar.lower(), file_name)
         if not os.path.exists(path):
             return
 
@@ -313,7 +301,7 @@ class GremlinWindow(QWidget):
     def outro_tick(self):
         s = settings
         s.CurrentFrames.Outro = self.play_animation(
-            sprite_manager.get("outro"),
+            sprite_manager.get(s.SpriteMap.Outro),
             s.CurrentFrames.Outro,
             s.FrameCounts.Outro
         )

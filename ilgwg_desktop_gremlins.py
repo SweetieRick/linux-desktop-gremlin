@@ -10,8 +10,12 @@ if __name__ == "__main__":
 
     # please load configuration files before creating the main window
     try:
-        config_manager.load_master_config()
-        config_manager.load_config_char()
+        state = (config_manager.load_master_config() and
+                 config_manager.load_sprite_map() and
+                 config_manager.load_frame_count())
+        if not state:
+            print("Fatal Error: Corrupted configuration. Quitting...")
+            sys.exit(1)
     except Exception as e:
         print(f"Fatal Error: Could not load configuration. {e}")
         sys.exit(1)

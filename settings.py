@@ -24,8 +24,8 @@ class Settings:
     # Why do I use "Matikanetannhauser" instead of "Mambo", you might ask?
     # Well, my name is iluvgirlswithglasses, what do you expect about my length preferences?
     StartingChar = "Matikanetannhauser"
-    SpriteColumn = 10
-    FrameRate = 31
+    SpriteColumn = 5
+    FrameRate = 60
     FollowRadius = 150.0
     FrameWidth = 200
     FrameHeight = 200
@@ -42,35 +42,67 @@ class MouseSettings:
     Speed = 10.0
 
 
+"""
+The following classes should have been shared a trait or something similar.
+I'll implement such generalization later.
+"""
+
+
+class SpriteMap:
+    Idle = None
+    Hover = None
+    Click = None
+    Sleep = None
+    Intro = None
+    Outro = None
+    Grab = None
+    Up = None
+    Down = None
+    Left = None
+    Right = None
+    UpLeft = None
+    UpRight = None
+    DownLeft = None
+    DownRight = None
+    WalkIdle = None
+    Pat = None
+
+
 class FrameCounts:
-    Intro = 0
-    Idle = 0
-    Left = 0
-    Right = 0
-    Up = 0
-    Down = 0
-    Outro = 0
-    Grab = 0
-    WalkIdle = 0
-    Click = 0
-    Dance = 0
-    Hover = 0
-    Sleep = 0
-    Pat = 0
+    Idle = None
+    Hover = None
+    Click = None
+    Sleep = None
+    Intro = None
+    Outro = None
+    Grab = None
+    Up = None
+    Down = None
+    Left = None
+    Right = None
+    UpLeft = None
+    UpRight = None
+    DownLeft = None
+    DownRight = None
+    WalkIdle = None
+    Pat = None
 
 
 class CurrentFrames:
-    Intro = 0
     Idle = 0
-    Outro = 0
-    WalkDown = 0
-    WalkUp = 0
-    WalkRight = 0
-    WalkLeft = 0
-    Grab = 0
-    WalkIdle = 0
-    Click = 0
-    Dance = 0
     Hover = 0
+    Click = 0
     Sleep = 0
+    Intro = 0
+    Outro = 0
+    Grab = 0
+    Up = 0
+    Down = 0
+    Left = 0
+    Right = 0
+    UpLeft = 0
+    UpRight = 0
+    DownLeft = 0
+    DownRight = 0
+    WalkIdle = 0
     Pat = 0
