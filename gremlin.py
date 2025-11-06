@@ -31,14 +31,14 @@ class GremlinWindow(QWidget):
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         self.setFixedSize(
-            settings.Settings.FrameWidth,
-            settings.Settings.FrameHeight
+            settings.SpriteMap.FrameWidth,
+            settings.SpriteMap.FrameHeight
         )
 
         # --- @! Main Sprite Display -----------------------------------------------------
         self.sprite_label = QLabel(self)
         self.sprite_label.setGeometry(
-            0, 0, settings.Settings.FrameWidth, settings.Settings.FrameHeight)
+            0, 0, settings.SpriteMap.FrameWidth, settings.SpriteMap.FrameHeight)
         self.sprite_label.setScaledContents(True)
 
         # --- @! Hotspots ----------------------------------------------------------------
@@ -166,18 +166,18 @@ class GremlinWindow(QWidget):
         if sheet is None or frame_count == 0:
             return current_frame
 
-        s = settings.Settings
-        cols = settings.SpriteMap.SpriteColumn
-        x = (current_frame % cols) * s.FrameWidth
-        y = (current_frame // cols) * s.FrameHeight
+        m = settings.SpriteMap
+        cols = m.SpriteColumn
+        x = (current_frame % cols) * m.FrameWidth
+        y = (current_frame // cols) * m.FrameHeight
 
         # check bounds
-        if x + s.FrameWidth > sheet.width() or y + s.FrameHeight > sheet.height():
+        if x + m.FrameWidth > sheet.width() or y + m.FrameHeight > sheet.height():
             print("Warning: Animation frame out of bounds.")
             return (current_frame + 1) % frame_count
 
         # create the cropped pixmap
-        crop_rect = QRect(x, y, s.FrameWidth, s.FrameHeight)
+        crop_rect = QRect(x, y, m.FrameWidth, m.FrameHeight)
         cropped_pixmap = sheet.copy(crop_rect)
         self.sprite_label.setPixmap(cropped_pixmap)
 

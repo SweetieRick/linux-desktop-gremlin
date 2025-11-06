@@ -27,8 +27,6 @@ class Settings:
     StartingChar = "Matikanetannhauser"
     Systray = False
     FollowRadius = 150.0
-    FrameWidth = 200
-    FrameHeight = 200
     LastPlayed: Dict[str, datetime.datetime] = {}
     MoveSpeed = 5
 
@@ -58,6 +56,8 @@ I'll implement such generalization later.
 class SpriteMap:
     FrameRate = 60
     SpriteColumn = 5
+    FrameHeight = None
+    FrameWidth = None
     Idle = None
     Hover = None
     Click = None

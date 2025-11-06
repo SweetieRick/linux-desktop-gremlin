@@ -1,7 +1,5 @@
 {
     "StartingChar": "Mambo",
     "Systray": false,
-    "FollowRadius": 150.0,
-    "FrameHeight": 300,
-    "FrameWidth": 300
+    "FollowRadius": 150.0
 }
