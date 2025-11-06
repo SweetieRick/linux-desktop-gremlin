@@ -26,7 +26,7 @@ This is not a strict 1:1 port, because I made some changes to the animation flow
 
 Furthermore, for anyone who wants to add or change the animation logic: Check out the `animation_tick` method in `gremlin.py`. Unlike KurtVelasco's original code, this version uses a more traditional Finite State Machine design, so it should make the logic easier to follow and extend. There's still plenty of room for improvement, though. I'll come back to polishing the code after I finish adding the animations I have in mind.
 
-# How to Install and Run
+# ⚙ How to Install and Run
 
 ## 1. Install Dependencies
 
@@ -119,6 +119,9 @@ Execute the script that matches your setup, then a gremlin shall be spawned:
 
 Wanna checkout other gremlins than Matikanetannhauser?
 
+https://github.com/user-attachments/assets/26e2a3b0-4fde-4a3a-926f-ad9f1e1cfb07
+
+
 Firstly, you may check for available gremlins in the `./spritesheet` directory. For example:
 
 ```
@@ -160,7 +163,7 @@ If you set `AnnoyEmote` to `false`, then nothing happens. If you set it to `true
 
 This program's systray is disabled by default, and you won't lose any functionality by disabling the systray either. However, if you need it, you might enable it by modifying the `Systray` field in `./config.json` to `true`.
 
-# Stay Tuned! 🚀
+# 🚀 Stay Tuned!
 
 I'll be adding more characters as soon as my full-time job and university decide to give me a break.
 
