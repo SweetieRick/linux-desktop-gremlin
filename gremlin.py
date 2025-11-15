@@ -116,9 +116,10 @@ class GremlinWindow(QWidget):
         # only triggers on state change, does nothing otherwise
         # except for shooting animations, which can be spammed
         if self.current_state == new_state:
-            if (self.has_reload and
-                new_state in [State.LEFT_ACTION, State.RIGHT_ACTION] and
-                    self.ammo > 0):
+            reshootable = (self.has_reload and
+                           new_state in [State.LEFT_ACTION, State.RIGHT_ACTION] and
+                           self.ammo > 0)
+            if reshootable:
                 c = max(settings.CurrentFrames.LeftAction,
                         settings.CurrentFrames.RightAction)
                 f = min(settings.FrameCounts.LeftAction,
